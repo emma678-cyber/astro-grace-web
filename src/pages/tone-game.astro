@@ -1,0 +1,209 @@
+---
+// src/pages/tone-game.astro
+// 这里是 Astro 的后台配置区，暂时不需要写复杂的逻辑
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>声调大作战 - Tone Master</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: #333;
+        }
+
+        .game-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #4a90e2;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #777;
+            margin-bottom: 2rem;
+        }
+
+        .score-board {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .word-display {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #2c3e50;
+            background: #f8f9fa;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            display: inline-block;
+            margin-bottom: 2rem;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            min-width: 150px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover {
+            border-color: #4a90e2;
+            background: #f0f7ff;
+            transform: translateY(-2px);
+        }
+
+        .option-btn:active {
+            transform: translateY(0);
+        }
+
+        .feedback {
+            font-size: 1.2rem;
+            font-weight: bold;
+            height: 2rem;
+            margin-top: 1rem;
+        }
+
+        .feedback.correct { color: #2ecc71; }
+        .feedback.wrong { color: #e74c3c; }
+
+        .next-btn {
+            background: #4a90e2;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+            display: none;
+            margin: 0 auto;
+        }
+
+        .next-btn:hover {
+            background: #357abd;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>🎯 声调大作战</h1>
+        <div class="subtitle">Tone Master: Choose the correct tone!</div>
+
+        <div class="score-board">
+            得分 (Score): <span id="score">0</span> / <span id="total">0</span>
+        </div>
+
+        <div>
+            <div class="word-display" id="word">mā</div>
+        </div>
+
+        <div class="options-grid">
+            <button class="option-btn" onclick="checkAnswer(1)">第 1 声 ( ¯ )</button>
+            <button class="option-btn" onclick="checkAnswer(2)">第 2 声 ( ˊ )</button>
+            <button class="option-btn" onclick="checkAnswer(3)">第 3 声 ( ˇ )</button>
+            <button class="option-btn" onclick="checkAnswer(4)">第 4 声 ( ˋ )</button>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">下一题 (Next)</button>
+    </div>
+
+    <script is:inline>
+        // 游戏题目数据库（老师未来可以自己在这里添加更多词汇！）
+        const questionBank = [
+            { word: 'mā', tone: 1 }, { word: 'má', tone: 2 }, { word: 'mǎ', tone: 3 }, { word: 'mà', tone: 4 },
+            { word: 'bá', tone: 2 }, { word: 'bà', tone: 4 }, { word: 'bā', tone: 1 }, { word: 'bǎ', tone: 3 },
+            { word: 'lǐ', tone: 3 }, { word: 'lì', tone: 4 }, { word: 'lī', tone: 1 }, { word: 'lí', tone: 2 },
+            { word: 'tā', tone: 1 }, { word: 'tá', tone: 2 }, { word: 'tǎ', tone: 3 }, { word: 'tà', tone: 4 }
+        ];
+
+        let currentQuestion = {};
+        let score = 0;
+        let totalQuestions = 0;
+        let hasAnswered = false;
+
+        function initGame() {
+            nextQuestion();
+        }
+
+        function nextQuestion() {
+            hasAnswered = false;
+            document.getElementById('feedback').innerText = '';
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('next-btn').style.display = 'none';
+            
+            // 恢复按钮点击效果
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => btn.style.opacity = '1');
+
+            // 随机抽取一题
+            const randomIndex = Math.floor(Math.random() * questionBank.length);
+            currentQuestion = questionBank[randomIndex];
+            
+            // 显示拼音
+            document.getElementById('word').innerText = currentQuestion.word;
+        }
+
+        function checkAnswer(selectedTone) {
+            if (hasAnswered) return; // 防止重复点击
+            hasAnswered = true;
+            totalQuestions++;
+
+            const feedbackEl = document.getElementById('feedback');
+            
+            if (selectedTone === currentQuestion.tone) {
+                score++;
+                feedbackEl.innerText = '🎉 太棒了！正确 (Correct!)';
+                feedbackEl.className = 'feedback correct';
+            } else {
+                feedbackEl.innerText = `❌ 哎呀，答错了。正确答案是第 ${currentQuestion.tone} 声。`;
+                feedbackEl.className = 'feedback wrong';
+            }
+
+            // 更新计分板
+            document.getElementById('score').innerText = score;
+            document.getElementById('total').innerText = totalQuestions;
+
+            // 显示下一题按钮
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        // 启动游戏
+        initGame();
+    </script>
+</body>
+</html>

@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grace's Chinese Classroom · Learn Chinese in Summer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@300;400;500;600&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-top:#bfe3f0;
+    --sky-mid:#d9edd8;
+    --sky-bottom:#f3f8e8;
+    --grass-dark:#5f9a52;
+    --grass-mid:#82b968;
+    --grass-light:#a9d189;
+    --sun:#f6d776;
+    --sun-glow:#fbe9b0;
+    --cream:#fffcf3;
+    --ink:#33402f;
+    --ink-soft:#5c6b53;
+    --brown:#a6743f;
+    --brown-dark:#8a5f30;
+    --card:#fffef9;
+    --shadow: 0 12px 30px -12px rgba(60,80,40,0.25);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter', sans-serif;
+    color:var(--ink);
+    background:var(--cream);
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.serif{
+    font-family:'Fraunces', serif;
+  }
+  .accent-hand{
+    font-family:'Caveat','Inter',cursive;
+  }
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 6vw;
+    background:rgba(255,252,243,0.75);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid rgba(95,154,82,0.15);
+  }
+  .logo{
+    display:flex; align-items:center; gap:8px;
+    font-family:'Fraunces', serif;
+    font-weight:700; font-size:20px; color:var(--brown-dark);
+    text-decoration:none;
+  }
+  .logo svg{width:28px;height:28px;}
+  .nav-links{
+    display:flex; gap:28px; list-style:none; margin:0; padding:0;
+    font-size:15px; font-weight:500; color:var(--ink-soft);
+  }
+  .nav-links a{text-decoration:none; position:relative; padding-bottom:2px;}
+  .nav-links a::after{
+    content:''; position:absolute; left:0; bottom:-3px; width:0; height:2px;
+    background:var(--grass-dark); transition:width .25s ease;
+  }
+  .nav-links a:hover::after{width:100%;}
+  .nav-cta{
+    background:var(--brown); color:#fff; padding:9px 20px; border-radius:999px;
+    font-size:14px; font-weight:500; text-decoration:none; box-shadow:var(--shadow);
+    white-space:nowrap;
+  }
+  @media(max-width:820px){ .nav-links{display:none;} }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    background:linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 55%, var(--sky-bottom) 100%);
+    overflow:hidden;
+    padding-top:80px;
+  }
+  .sun{
+    position:absolute; top:9%; right:14%;
+    width:120px; height:120px; border-radius:50%;
+    background:radial-gradient(circle, var(--sun) 0%, var(--sun-glow) 55%, rgba(251,233,176,0) 75%);
+    filter:blur(0.5px);
+  }
+  .cloud{
+    position:absolute; opacity:.9;
+  }
+  .cloud svg{width:100%;height:100%;display:block;}
+  .cloud-1{ top:14%; left:-10%; width:220px; animation:drift 55s linear infinite; }
+  .cloud-2{ top:24%; left:-20%; width:150px; animation:drift 70s linear infinite; animation-delay:-20s; opacity:.75;}
+  .cloud-3{ top:8%; left:-15%; width:110px; animation:drift 40s linear infinite; animation-delay:-8s; opacity:.6;}
+  @keyframes drift{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(140vw); }
+  }
+  .kite{
+    position:absolute; top:20%; left:70%; width:46px; opacity:.9;
+    animation:float 6s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%,100%{ transform:translateY(0) rotate(-4deg); }
+    50%{ transform:translateY(-18px) rotate(4deg); }
+  }
+  .hero-content{
+    position:relative; z-index:5; text-align:center; padding:0 20px;
+    max-width:720px;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:14px; letter-spacing:.08em; color:var(--brown-dark);
+    background:rgba(255,255,255,.55); padding:6px 16px; border-radius:999px;
+    margin-bottom:22px; border:1px solid rgba(166,116,63,0.25);
+  }
+  .hero h1{
+    font-size:clamp(34px,6vw,58px);
+    line-height:1.25; margin:0 0 18px; color:#3c4a30;
+    font-weight:700;
+  }
+  .hero h1 .brush{
+    color:var(--brown-dark);
+    font-family:'Caveat', cursive; font-size:1.15em; font-weight:600;
+  }
+  .hero p.lead{
+    font-size:17px; color:var(--ink-soft); line-height:1.9; margin:0 auto 34px;
+    max-width:520px;
+  }
+  .hero-btns{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+  .btn-primary, .btn-ghost{
+    padding:13px 28px; border-radius:999px; font-size:15px; font-weight:500;
+    text-decoration:none; transition:transform .2s ease, box-shadow .2s ease;
+    display:inline-block;
+  }
+  .btn-primary{ background:var(--brown); color:#fff; box-shadow:var(--shadow); }
+  .btn-primary:hover{ transform:translateY(-2px); }
+  .btn-ghost{ background:rgba(255,255,255,.6); color:var(--ink); border:1px solid rgba(95,154,82,.35); }
+  .btn-ghost:hover{ background:#fff; }
+
+  /* hill silhouette divider */
+  .hill-divider{ position:relative; width:100%; line-height:0; margin-top:-2px; }
+  .hill-divider svg{ width:100%; height:auto; display:block; }
+
+  /* grass sway at very bottom of hero */
+  .grass-row{
+    position:absolute; bottom:0; left:0; width:100%; height:90px; z-index:4;
+  }
+  .grass-row svg{ width:100%; height:100%; }
+  .blade{ transform-origin:bottom center; animation:sway 4.5s ease-in-out infinite; }
+  @keyframes sway{
+    0%,100%{ transform:rotate(-3deg); }
+    50%{ transform:rotate(3deg); }
+  }
+
+  /* ---------- SECTION SHELL ---------- */
+  section.block{
+    position:relative;
+    padding:100px 6vw 120px;
+  }
+  .band-sky{ background:linear-gradient(180deg,#f3f8e8 0%, #eef7ea 100%); }
+  .band-cream{ background:var(--cream); }
+  .band-green{ background:linear-gradient(180deg, #eaf4e2 0%, #f7f2e2 100%); }
+
+  .section-head{
+    text-align:center; max-width:640px; margin:0 auto 56px;
+  }
+  .section-tag{
+    display:inline-block; font-size:13px; letter-spacing:.12em; color:var(--grass-dark);
+    font-weight:600; margin-bottom:12px; text-transform:uppercase;
+  }
+  .section-head h2{
+    font-size:clamp(26px,4vw,38px); margin:0 0 14px; color:#3c4a30;
+  }
+  .section-head p{ color:var(--ink-soft); line-height:1.8; margin:0; font-size:15.5px; }
+
+  /* ---------- ABOUT ---------- */
+  .about-wrap{
+    display:grid; grid-template-columns:280px 1fr; gap:56px; align-items:center;
+    max-width:980px; margin:0 auto;
+  }
+  .about-portrait{
+    position:relative; width:100%; aspect-ratio:1/1; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff 0%, #fdf3d9 40%, var(--grass-light) 100%);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:var(--shadow);
+    border:6px solid #fff;
+  }
+  .about-portrait svg{ width:78%; }
+  .about-text h3{ font-size:26px; margin:0 0 14px; color:#3c4a30; }
+  .about-text p{ color:var(--ink-soft); line-height:1.95; font-size:15.5px; margin:0 0 14px; }
+  .about-tags{ display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+  .about-tags span{
+    background:#fff; border:1px solid rgba(95,154,82,.3); color:var(--grass-dark);
+    padding:6px 14px; border-radius:999px; font-size:13.5px; font-weight:500;
+  }
+  @media(max-width:760px){ .about-wrap{ grid-template-columns:1fr; text-align:center; }
+    .about-portrait{ width:220px; margin:0 auto; } .about-tags{justify-content:center;} }
+
+  /* ---------- LEVEL SECTIONS ---------- */
+  .level-header{
+    display:flex; align-items:center; gap:16px; justify-content:center; margin-bottom:12px;
+  }
+  .level-badge{
+    width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:700; color:#fff; font-size:18px;
+  }
+  .badge-beginner{ background:var(--grass-mid); }
+  .badge-advanced{ background:var(--brown); }
+
+  .card-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:22px;
+    max-width:1120px; margin:0 auto;
+  }
+  @media(max-width:980px){ .card-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:560px){ .card-grid{ grid-template-columns:1fr; } }
+
+  .card{
+    background:var(--card); border-radius:20px; padding:28px 22px;
+    box-shadow:var(--shadow); border:1px solid rgba(95,154,82,.12);
+    transition:transform .25s ease, box-shadow .25s ease;
+    opacity:0; transform:translateY(24px);
+  }
+  .card.in-view{ opacity:1; transform:translateY(0); }
+  .card:hover{ transform:translateY(-6px); box-shadow:0 18px 34px -14px rgba(60,80,40,.32); }
+  .card .icon-wrap{
+    width:56px; height:56px; border-radius:16px; display:flex; align-items:center; justify-content:center;
+    margin-bottom:18px;
+  }
+  .card h4{ margin:0 0 8px; font-size:17px; font-family:'Fraunces',serif; color:#3c4a30; }
+  .card p{ margin:0 0 16px; font-size:13.8px; color:var(--ink-soft); line-height:1.7; }
+  .card .card-link{
+    font-size:13.5px; font-weight:600; color:var(--brown-dark); text-decoration:none;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .card .card-link::after{ content:'→'; transition:transform .2s ease; }
+  .card .card-link:hover::after{ transform:translateX(4px); }
+
+  .icon-yellow{ background:#fdf0c8; }
+  .icon-green{ background:#dcefd0; }
+  .icon-blue{ background:#d8ecf2; }
+  .icon-brown{ background:#f0e0c9; }
+
+  /* ---------- STUDENT WORK ---------- */
+  .gallery{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:18px; max-width:1120px; margin:0 auto;
+  }
+  @media(max-width:900px){ .gallery{ grid-template-columns:repeat(2,1fr);} }
+  .gallery-item{
+    position:relative; border-radius:18px; overflow:hidden; aspect-ratio:4/5;
+    box-shadow:var(--shadow);
+  }
+  .gallery-item .ph{
+    width:100%; height:100%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .gallery-item .cap{
+    position:absolute; bottom:0; left:0; right:0; padding:14px 16px 12px;
+    background:linear-gradient(0deg, rgba(50,60,40,.72), rgba(50,60,40,0));
+    color:#fff; font-size:13.5px; font-weight:500;
+  }
+
+  /* ---------- CTA / CONTACT ---------- */
+  .cta-block{
+    position:relative; text-align:center; padding:100px 6vw 120px;
+    background:linear-gradient(180deg, #eef7ea 0%, #cfe8c6 100%);
+    overflow:hidden;
+  }
+  .cta-block .inner{ position:relative; z-index:3; max-width:600px; margin:0 auto; }
+  .cta-block h2{ font-size:clamp(26px,4vw,36px); margin:0 0 16px; color:#33402f; }
+  .cta-block p{ color:var(--ink-soft); line-height:1.9; margin:0 0 32px; font-size:15.5px; }
+
+  footer{
+    background:#3c4a30; color:#e7ecdf; padding:44px 6vw 30px; text-align:center;
+    font-size:13.5px;
+  }
+  footer .foot-logo{ font-family:'Fraunces',serif; font-size:18px; margin-bottom:10px; }
+  footer .foot-links{ display:flex; gap:24px; justify-content:center; margin:16px 0; flex-wrap:wrap; }
+  footer a{ text-decoration:none; color:#dfe6d3; }
+  footer .copyright{ opacity:.6; margin-top:18px; }
+
+  /* ---------- JOURNEY (scroll narrative) ---------- */
+  .journey-track{
+    position:relative; max-width:720px; margin:0 auto; padding-left:44px;
+  }
+  .journey-line{
+    position:absolute; left:9px; top:6px; bottom:20px; width:2px;
+    background:rgba(95,154,82,.22);
+    overflow:hidden;
+  }
+  .journey-line-fill{
+    width:100%; height:0%;
+    background:linear-gradient(180deg, var(--grass-mid), var(--sun));
+    transition:height .5s ease;
+  }
+  .journey-item{
+    position:relative; padding-bottom:60px;
+    opacity:0; transform:translateY(22px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .journey-item:last-child{ padding-bottom:4px; }
+  .journey-item.in-view{ opacity:1; transform:translateY(0); }
+  .journey-dot{
+    position:absolute; left:-44px; top:5px; width:14px; height:14px; border-radius:50%;
+    background:#fff; border:3px solid var(--grass-mid);
+    transition:background .3s ease, border-color .3s ease;
+  }
+  .journey-item.in-view .journey-dot{ background:var(--brown); border-color:var(--brown); }
+  .journey-stage{
+    font-size:12px; letter-spacing:.1em; color:var(--brown-dark); font-weight:600;
+    text-transform:uppercase;
+  }
+  .journey-item h3{
+    font-family:'Fraunces', serif; font-size:clamp(21px,3vw,29px);
+    margin:10px 0 12px; color:#3c4a30; line-height:1.45; font-weight:600;
+  }
+  .journey-item p{
+    color:var(--ink-soft); line-height:1.9; font-size:15px; margin:0; max-width:560px;
+  }
+  @media(max-width:600px){
+    .journey-track{ padding-left:34px; }
+    .journey-dot{ left:-34px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .cloud-1,.cloud-2,.cloud-3,.kite,.blade{ animation:none !important; }
+    .card{ opacity:1; transform:none; }
+    .journey-item{ opacity:1; transform:none; }
+  }
+
+  /* ---------- LOGO RIGHT-CLICK MENU ---------- */
+  .logo{ position:relative; user-select:none; }
+
+  .rcl-menu{
+    position:fixed; z-index:999;
+    min-width:230px;
+    background:var(--cream);
+    border:1px solid rgba(95,154,82,.25);
+    border-radius:16px;
+    box-shadow:0 20px 40px -14px rgba(50,60,40,.35);
+    padding:8px;
+    font-family:'Inter', sans-serif;
+    opacity:0; transform:scale(.96) translateY(-4px);
+    pointer-events:none;
+    transition:opacity .14s ease, transform .14s ease;
+  }
+  .rcl-menu.open{ opacity:1; transform:scale(1) translateY(0); pointer-events:auto; }
+
+  .rcl-title{
+    font-size:11.5px; letter-spacing:.06em; color:var(--ink-soft);
+    padding:8px 12px 6px; text-transform:uppercase; font-weight:600;
+  }
+  .rcl-item{
+    display:flex; align-items:center; gap:10px;
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:9px 12px; border-radius:10px;
+    font-size:14px; color:var(--ink); font-family:inherit;
+  }
+  .rcl-item:hover, .rcl-item:focus-visible{ background:#eef4e6; outline:none; }
+  .rcl-item svg{ width:16px; height:16px; flex-shrink:0; color:var(--grass-dark); }
+  .rcl-item .rcl-check{ margin-left:auto; opacity:0; color:var(--grass-dark); font-size:12px; }
+  .rcl-item.copied .rcl-check{ opacity:1; }
+
+  .rcl-sep{ height:1px; background:rgba(95,154,82,.18); margin:6px 8px; }
+
+  .rcl-palette{ display:flex; gap:8px; padding:8px 12px 10px; }
+  .rcl-swatch{
+    width:30px; height:30px; border-radius:9px; cursor:pointer; border:1px solid rgba(0,0,0,.08);
+    position:relative; flex-shrink:0;
+    transition:transform .15s ease;
+  }
+  .rcl-swatch:hover{ transform:translateY(-3px); }
+  .rcl-swatch::after{
+    content:attr(data-label); position:absolute; bottom:-22px; left:50%; transform:translateX(-50%);
+    font-size:10px; white-space:nowrap; color:var(--ink-soft); opacity:0; transition:opacity .15s ease;
+  }
+  .rcl-swatch:hover::after{ opacity:1; }
+
+  .rcl-hint{
+    position:absolute; top:100%; left:50%; transform:translateX(-50%) translateY(4px);
+    font-size:11px; color:var(--ink-soft); background:#fff; padding:3px 9px; border-radius:999px;
+    white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .18s ease;
+    box-shadow:0 6px 14px -6px rgba(50,60,40,.3);
+  }
+  .logo:hover .rcl-hint{ opacity:.9; }
+  @media(max-width:820px){ .rcl-hint{ display:none; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#top" class="logo" data-rcl-logo>
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 3C9 7 6 9 6 13a6 6 0 0012 0c0-4-3-6-6-10z" fill="#82b968"/><path d="M12 6c-1.8 2.7-3.6 4.2-3.6 6.8A3.6 3.6 0 0012 16.4" stroke="#5f9a52" stroke-width="1" fill="none" stroke-linecap="round"/></svg>
+    Grace's Chinese Classroom
+    <span class="rcl-hint">Right-click to copy / download logo</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About Me</a></li>
+    <li><a href="#journey">My Journey</a></li>
+    <li><a href="#beginner">Beginner Chinese</a></li>
+    <li><a href="#advanced">Advanced Chinese</a></li>
+    <li><a href="#gallery">Student Work</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Online Classes</a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="sun"></div>
+
+  <div class="cloud cloud-1"><svg viewBox="0 0 200 90"><ellipse cx="55" cy="55" rx="55" ry="32" fill="#fff"/><ellipse cx="110" cy="40" rx="45" ry="38" fill="#fff"/><ellipse cx="150" cy="58" rx="40" ry="26" fill="#fff"/></svg></div>
+  <div class="cloud cloud-2"><svg viewBox="0 0 200 90"><ellipse cx="55" cy="55" rx="55" ry="32" fill="#fff"/><ellipse cx="110" cy="40" rx="45" ry="38" fill="#fff"/><ellipse cx="150" cy="58" rx="40" ry="26" fill="#fff"/></svg></div>
+  <div class="cloud cloud-3"><svg viewBox="0 0 200 90"><ellipse cx="55" cy="55" rx="55" ry="32" fill="#fff"/><ellipse cx="110" cy="40" rx="45" ry="38" fill="#fff"/><ellipse cx="150" cy="58" rx="40" ry="26" fill="#fff"/></svg></div>
+
+  <svg class="kite" viewBox="0 0 40 60" fill="none"><path d="M20 2 L36 26 L20 50 L4 26 Z" fill="#f2a65a" stroke="#c9773a" stroke-width="1.5"/><path d="M20 50 Q22 55 18 60" stroke="#c9773a" stroke-width="1.5" fill="none"/></svg>
+
+  <div class="hero-content">
+    <span class="eyebrow">🌿 Welcome to a summer Chinese classroom</span>
+    <h1>Hi, I'm <span class="brush">Grace</span><br>Let's learn Chinese through stories and play</h1>
+    <p class="lead">Here you'll find the slides, worksheets, activities and mini games I use in class, plus a little corner for the work my students and I have made together. Take your time — it's a bit like wandering through a summer hillside.</p>
+    <div class="hero-btns">
+      <a href="#beginner" class="btn-primary">Browse Teaching Resources</a>
+      <a href="#about" class="btn-ghost">Meet Grace</a>
+    </div>
+  </div>
+
+  <div class="grass-row">
+    <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
+      <path d="M0,90 L0,40 Q60,10 120,40 Q180,60 240,35 Q300,15 360,42 Q420,65 480,38 Q540,12 600,40 Q660,62 720,36 Q780,14 840,42 Q900,64 960,38 Q1020,12 1080,40 Q1140,60 1200,36 Q1300,14 1440,40 L1440,90 Z" fill="var(--grass-light)" opacity="0.55"/>
+      <path d="M0,90 L0,55 Q80,30 160,55 Q240,75 320,50 Q400,28 480,55 Q560,78 640,52 Q720,30 800,56 Q880,76 960,50 Q1040,28 1120,54 Q1220,74 1440,55 L1440,90 Z" fill="var(--grass-mid)"/>
+    </svg>
+  </div>
+
+  <div class="hill-divider">
+    <svg viewBox="0 0 1440 140" preserveAspectRatio="none">
+      <path d="M0,90 Q360,20 720,80 Q1080,140 1440,60 L1440,140 L0,140 Z" fill="#eef7ea"/>
+    </svg>
+  </div>
+</header>
+
+<!-- ============ ABOUT ============ -->
+<section class="block band-sky" id="about">
+  <div class="section-head">
+    <span class="section-tag">About Grace</span>
+    <h2>About Me</h2>
+  </div>
+  <div class="about-wrap">
+    <div class="about-portrait">
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="42" r="24" fill="#fbe3c2"/>
+        <path d="M26 40 Q26 14 50 14 Q74 14 74 40 Q74 30 60 26 Q50 34 36 26 Q26 30 26 40Z" fill="#5b4636"/>
+        <circle cx="41" cy="44" r="2.2" fill="#4a3b2c"/>
+        <circle cx="59" cy="44" r="2.2" fill="#4a3b2c"/>
+        <path d="M42 54 Q50 60 58 54" stroke="#c17a5a" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M18 92 Q22 62 50 62 Q78 62 82 92 Z" fill="#82b968"/>
+        <path d="M32 66 Q50 74 68 66" stroke="#fff" stroke-width="2" fill="none" opacity=".6"/>
+      </svg>
+    </div>
+    <div class="about-text">
+      <h3>Teacher Grace</h3>
+      <p>Hi, I'm Grace, a Chinese teacher. I believe the best way into a language is through stories, play and hands-on activities — not rote memorization. This site is where I've organized the materials I use in class, so I can share them with my students easily, and hopefully one day welcome online learners too.</p>
+      <p>Whether you're just starting out with pinyin or already reading short passages and keeping a journal, you'll find something here for you.</p>
+      <div class="about-tags">
+        <span>🎓 Chinese Teaching</span>
+        <span>📖 Beginner · Advanced</span>
+        <span>🎮 Interactive Learning</span>
+        <span>💻 Online Classes Coming Soon</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hill-divider" style="transform:scaleY(-1);">
+  <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,60 Q360,10 720,55 Q1080,100 1440,40 L1440,0 L0,0 Z" fill="var(--cream)"/></svg>
+</div>
+
+<!-- ============ JOURNEY (simplified scroll-narrative, inspired by editorial layouts) ============ -->
+<section class="block band-cream journey-section" id="journey">
+  <div class="section-head">
+    <span class="section-tag">My Teaching Journey</span>
+    <h2>My Teaching Journey</h2>
+    <p>From the first time I stood in front of a class to turning that experience into this site — here's the road we've walked together.</p>
+  </div>
+  <div class="journey-track">
+    <div class="journey-line"><div class="journey-line-fill" id="journeyFill"></div></div>
+    <div class="journey-list">
+      <div class="journey-item">
+        <span class="journey-dot"></span>
+        <span class="journey-stage">Where it began</span>
+        <h3>"Ms. Grace, can you say that again?"</h3>
+        <p>In my first small-group class, I noticed rote memorization was forgotten within days — but a story, a round of role-play, and kids would ask to do it again on their own. That request became the starting point for how I teach.</p>
+      </div>
+      <div class="journey-item">
+        <span class="journey-dot"></span>
+        <span class="journey-stage">Growing up</span>
+        <h3>From one lesson to a full curriculum</h3>
+        <p>Little by little, scattered slides and worksheets grew into structured beginner and advanced courses. I started organizing every material carefully, so nothing was just a one-time handout.</p>
+      </div>
+      <div class="journey-item">
+        <span class="journey-dot"></span>
+        <span class="journey-stage">A turning point</span>
+        <h3>Making learning something to look forward to</h3>
+        <p>Once I added classroom games and interactive activities, I noticed students started looking forward to Chinese class — which convinced me good design matters more than repetition ever could.</p>
+      </div>
+      <div class="journey-item">
+        <span class="journey-dot"></span>
+        <span class="journey-stage">Right now</span>
+        <h3>Bringing the classroom to this hillside</h3>
+        <p>This site is the first step in turning years of teaching into something lasting — and the starting point for the online Chinese classes I hope to open, to reach even more students.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BEGINNER ============ -->
+<section class="block band-cream" id="beginner">
+  <div class="section-head">
+    <div class="level-header">
+      <span class="level-badge badge-beginner">B</span>
+    </div>
+    <span class="section-tag">Beginner Chinese</span>
+    <h2>Beginner Chinese</h2>
+    <p>From pinyin and tones to everyday conversation — resources for students starting from scratch.</p>
+  </div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="icon-wrap icon-yellow">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" stroke="#c99a3a" stroke-width="1.6"/><path d="M8 8h8M8 12h8M8 16h5" stroke="#c99a3a" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+      <h4>Slides</h4>
+      <p>Classroom slides covering pinyin basics, core vocabulary and sentence patterns.</p>
+      <a href="#" class="card-link">View slides</a>
+    </div>
+    <div class="card">
+      <div class="icon-wrap icon-green">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M6 3h9l5 5v13a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z" stroke="#4f8a45" stroke-width="1.6"/><path d="M9 13l2 2 4-5" stroke="#4f8a45" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h4>Worksheets</h4>
+      <p>Writing practice, matching and fill-in-the-blank sheets that follow the lessons.</p>
+      <a href="#" class="card-link">Download worksheets</a>
+    </div>
+    <div class="card">
+      <div class="icon-wrap icon-blue">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#3f8fa3" stroke-width="1.6"/><path d="M9 9c1-1 5-1 6 0M8 14c1.5 2 6.5 2 8 0" stroke="#3f8fa3" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+      <h4>Class Activities</h4>
+      <p>Role-play, card-matching and other easy activities for classroom interaction.</p>
+      <a href="#" class="card-link">View activities</a>
+    </div>
+    <div class="card">
+      <div class="icon-wrap icon-brown">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="18" height="12" rx="2" stroke="#a06a34" stroke-width="1.6"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2" stroke="#a06a34" stroke-width="1.6"/><circle cx="9" cy="13" r="1.3" fill="#a06a34"/><circle cx="15" cy="13" r="1.3" fill="#a06a34"/></svg>
+      </div>
+      <h4>Mini Games</h4>
+      <p>Light, playful games to reinforce pinyin and vocabulary.</p>
+      <a href="#" class="card-link">Play now</a>
+    </div>
+  </div>
+</section>
+
+<div class="hill-divider">
+  <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,50 Q360,90 720,45 Q1080,5 1440,55 L1440,100 L0,100 Z" fill="#eaf4e2"/></svg>
+</div>
+
+<!-- ============ ADVANCED ============ -->
+<section class="block band-green" id="advanced">
+  <div class="section-head">
+    <div class="level-header">
+      <span class="level-badge badge-advanced">A</span>
+    </div>
+    <span class="section-tag">Advanced Chinese</span>
+    <h2>Advanced Chinese</h2>
+    <p>Reading, writing and deeper grammar and culture content for students building fluency.</p>
+  </div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="icon-wrap icon-yellow">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" stroke="#c99a3a" stroke-width="1.6"/><path d="M8 8h8M8 12h8M8 16h5" stroke="#c99a3a" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+      <h4>Slides</h4>
+      <p>In-depth lessons on idioms, reading comprehension and writing technique.</p>
+      <a href="#" class="card-link">View slides</a>
+    </div>
+    <div class="card">
+      <div class="icon-wrap icon-green">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M6 3h9l5 5v13a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z" stroke="#4f8a45" stroke-width="1.6"/><path d="M9 13l2 2 4-5" stroke="#4f8a45" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h4>Worksheets</h4>
+      <p>Short-essay writing, targeted grammar drills and reading comprehension.</p>
+      <a href="#" class="card-link">Download worksheets</a>
+    </div>
+    <div class="card">
+      <div class="icon-wrap icon-blue">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#3f8fa3" stroke-width="1.6"/><path d="M9 9c1-1 5-1 6 0M8 14c1.5 2 6.5 2 8 0" stroke="#3f8fa3" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+      <h4>Class Activities</h4>
+      <p>Debates, presentations and small-group discussions for deeper language use.</p>
+      <a href="#" class="card-link">View activities</a>
+    </div>
+    <div class="card">
+      <div class="icon-wrap icon-brown">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="18" height="12" rx="2" stroke="#a06a34" stroke-width="1.6"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2" stroke="#a06a34" stroke-width="1.6"/><circle cx="9" cy="13" r="1.3" fill="#a06a34"/><circle cx="15" cy="13" r="1.3" fill="#a06a34"/></svg>
+      </div>
+      <h4>Mini Games</h4>
+      <p>Idiom chains, sentence-pattern challenges and other advanced games.</p>
+      <a href="#" class="card-link">Play now</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STUDENT WORK ============ -->
+<section class="block band-cream" id="gallery">
+  <div class="section-head">
+    <span class="section-tag">Student Work</span>
+    <h2>Student Work</h2>
+    <p>A little gallery of handwritten cards, short essays and classroom creations — every piece worth seeing.</p>
+  </div>
+  <div class="gallery">
+    <div class="gallery-item">
+      <div class="ph" style="background:linear-gradient(160deg,#fbe3c2,#f2c98a);">
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="none"><path d="M4 20l4-4 12-12 4 4L12 20l-8 4z" stroke="#8a5f30" stroke-width="1.5" fill="none"/></svg>
+      </div>
+      <div class="cap">Calligraphy Practice · Beginner Class</div>
+    </div>
+    <div class="gallery-item">
+      <div class="ph" style="background:linear-gradient(160deg,#d8ecf2,#a9d5e0);">
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="14" rx="1.5" stroke="#3f8fa3" stroke-width="1.5"/><path d="M4 15l4-4 3 3 5-6 4 5" stroke="#3f8fa3" stroke-width="1.5"/></svg>
+      </div>
+      <div class="cap">"My Hometown" · Short Essay</div>
+    </div>
+    <div class="gallery-item">
+      <div class="ph" style="background:linear-gradient(160deg,#dcefd0,#b3d998);">
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.6 5.7L21 9.3l-4.5 4.1L17.6 20 12 16.6 6.4 20l1.1-6.6L3 9.3l6.4-.6L12 3z" stroke="#4f8a45" stroke-width="1.4"/></svg>
+      </div>
+      <div class="cap">Classroom Craft · Advanced Class</div>
+    </div>
+    <div class="gallery-item">
+      <div class="ph" style="background:linear-gradient(160deg,#f0e0c9,#e0bd8f);">
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="none"><path d="M4 19V5a1 1 0 011-1h10l5 5v10a1 1 0 01-1 1H5a1 1 0 01-1-1z" stroke="#a06a34" stroke-width="1.5"/></svg>
+      </div>
+      <div class="cap">Poetry Reading Recording</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta-block" id="contact">
+  <svg style="position:absolute;bottom:0;left:0;width:100%;z-index:1;" viewBox="0 0 1440 80" preserveAspectRatio="none"><path d="M0,80 L0,40 Q360,0 720,35 Q1080,70 1440,30 L1440,80 Z" fill="#5f9a52" opacity="0.35"/></svg>
+  <div class="inner">
+    <h2>Looking forward to online Chinese classes</h2>
+    <p>If you'd like to learn Chinese with Grace through stories and games, leave your contact info and I'll let you know as soon as online classes open.</p>
+    <a href="mailto:hello@graceteacheschinese.com" class="btn-primary">Get in Touch</a>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-logo">Grace's Chinese Classroom</div>
+  <div class="foot-links">
+    <a href="#about">About Me</a>
+    <a href="#beginner">Beginner Chinese</a>
+    <a href="#advanced">Advanced Chinese</a>
+    <a href="#gallery">Student Work</a>
+  </div>
+  <div class="copyright">© 2026 Grace's Chinese Classroom · Learning Chinese on a summer hillside</div>
+</footer>
+
+<script>
+  // Card fade-in on scroll
+  const cards = document.querySelectorAll('.card');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in-view');
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.15});
+  cards.forEach(c=>io.observe(c));
+
+  // Teaching journey: fade in each item + grow the line as progress
+  const journeyItems = document.querySelectorAll('.journey-item');
+  const journeyFill = document.getElementById('journeyFill');
+  if(journeyItems.length){
+    const jIo = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting) e.target.classList.add('in-view');
+      });
+      const doneCount = document.querySelectorAll('.journey-item.in-view').length;
+      if(journeyFill){
+        journeyFill.style.height = (doneCount / journeyItems.length * 100) + '%';
+      }
+    }, {threshold:0.4});
+    journeyItems.forEach(item=>jIo.observe(item));
+  }
+
+  // ---------- LOGO right-click menu (Grace brand version, no third-party dependency) ----------
+  (function(){
+    // Standalone mark (leaf) — used for "copy/download mark"
+    const MARK_SVG = `<svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M12 3C9 7 6 9 6 13a6 6 0 0012 0c0-4-3-6-6-10z" fill="#82b968"/>
+  <path d="M12 6c-1.8 2.7-3.6 4.2-3.6 6.8A3.6 3.6 0 0012 16.4" stroke="#5f9a52" stroke-width="1" fill="none" stroke-linecap="round"/>
+</svg>`;
+
+    // Full logo (leaf + wordmark) — used for "copy/download logo"
+    const LOGO_SVG = `<svg width="300" height="56" viewBox="0 0 300 56" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(6,10)">
+    <path d="M12 3C9 7 6 9 6 13a6 6 0 0012 0c0-4-3-6-6-10z" fill="#82b968"/>
+    <path d="M12 6c-1.8 2.7-3.6 4.2-3.6 6.8A3.6 3.6 0 0012 16.4" stroke="#5f9a52" stroke-width="1" fill="none" stroke-linecap="round"/>
+  </g>
+  <text x="42" y="35" font-family="'Fraunces', serif" font-size="18" font-weight="700" fill="#8a5f30">Grace's Chinese Classroom</text>
+</svg>`;
+
+    const PALETTE = [
+      {label:'Sky Blue',    value:'#BFE3F0'},
+      {label:'Grass Green', value:'#5F9A52'},
+      {label:'Sun Yellow',  value:'#F6D776'},
+      {label:'Earth Brown', value:'#A6743F'},
+      {label:'Cream White', value:'#FFFCF3'},
+    ];
+
+    const logoEl = document.querySelector('[data-rcl-logo]');
+    if(!logoEl) return;
+
+    // Build menu DOM
+    const menu = document.createElement('div');
+    menu.className = 'rcl-menu';
+    menu.setAttribute('role','menu');
+    menu.innerHTML = `
+      <div class="rcl-title">Grace's Chinese Classroom · Brand Assets</div>
+      <button class="rcl-item" data-action="copy-mark" role="menuitem">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>
+        Copy mark (SVG)
+        <span class="rcl-check">✓ Copied</span>
+      </button>
+      <button class="rcl-item" data-action="copy-logo" role="menuitem">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>
+        Copy full logo (SVG)
+        <span class="rcl-check">✓ Copied</span>
+      </button>
+      <div class="rcl-sep"></div>
+      <button class="rcl-item" data-action="download-mark" role="menuitem">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 19h14"/></svg>
+        Download mark (SVG)
+      </button>
+      <button class="rcl-item" data-action="download-logo" role="menuitem">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 19h14"/></svg>
+        Download full logo (SVG)
+      </button>
+      <div class="rcl-sep"></div>
+      <div class="rcl-title">Brand Palette · Click to copy</div>
+      <div class="rcl-palette">
+        ${PALETTE.map(c=>`<div class="rcl-swatch" style="background:${c.value}" data-color="${c.value}" data-label="${c.label} ${c.value}" title="${c.label} ${c.value}"></div>`).join('')}
+      </div>
+    `;
+    document.body.appendChild(menu);
+
+    function openMenu(x, y){
+      menu.classList.add('open');
+      const rect = menu.getBoundingClientRect();
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const left = Math.min(x, vw - rect.width - 12);
+      const top  = Math.min(y, vh - rect.height - 12);
+      menu.style.left = Math.max(12,left) + 'px';
+      menu.style.top  = Math.max(12,top) + 'px';
+    }
+    function closeMenu(){ menu.classList.remove('open'); }
+
+    function downloadSVG(svgString, filename){
+      const blob = new Blob([svgString], {type:'image/svg+xml'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    async function copyText(text, btn){
+      try{
+        await navigator.clipboard.writeText(text);
+        if(btn){
+          btn.classList.add('copied');
+          setTimeout(()=>btn.classList.remove('copied'), 1200);
+        }
+      }catch(err){
+        // Fallback when clipboard is unavailable: let the user copy manually
+        console.warn('Copy failed', err);
+      }
+    }
+
+    // Trigger on right-click
+    logoEl.addEventListener('contextmenu', (e)=>{
+      e.preventDefault();
+      openMenu(e.clientX, e.clientY);
+    });
+
+    // Trigger on long-press (mobile)
+    let pressTimer = null;
+    logoEl.addEventListener('touchstart', (e)=>{
+      const touch = e.touches[0];
+      pressTimer = setTimeout(()=>{
+        openMenu(touch.clientX, touch.clientY);
+      }, 500);
+    }, {passive:true});
+    logoEl.addEventListener('touchend', ()=> clearTimeout(pressTimer));
+    logoEl.addEventListener('touchmove', ()=> clearTimeout(pressTimer));
+
+    // Clicks inside the menu
+    menu.addEventListener('click', (e)=>{
+      const item = e.target.closest('.rcl-item');
+      const swatch = e.target.closest('.rcl-swatch');
+
+      if(item){
+        const action = item.dataset.action;
+        if(action === 'copy-mark') copyText(MARK_SVG, item);
+        if(action === 'copy-logo') copyText(LOGO_SVG, item);
+        if(action === 'download-mark') { downloadSVG(MARK_SVG, 'grace-mark.svg'); closeMenu(); }
+        if(action === 'download-logo') { downloadSVG(LOGO_SVG, 'grace-logo.svg'); closeMenu(); }
+        return;
+      }
+      if(swatch){
+        copyText(swatch.dataset.color, swatch);
+      }
+    });
+
+    // Close on outside click or Esc
+    document.addEventListener('click', (e)=>{
+      if(!menu.contains(e.target) && e.target !== logoEl && !logoEl.contains(e.target)){
+        closeMenu();
+      }
+    });
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeMenu(); });
+    window.addEventListener('scroll', closeMenu, {passive:true});
+    window.addEventListener('resize', closeMenu);
+  })();
+</script>
+
+</body>
+</html>
