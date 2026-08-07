@@ -1,0 +1,380 @@
+---
+// src/pages/hanzi.astro
+const pageTitle = "汉字小工坊 - 偏旁部首拼拼乐";
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle}</title>
+    <style>
+      :root {
+        --bg-color: #f0fdf4;
+        --card-bg: #ffffff;
+        --primary: #16a34a;
+        --primary-hover: #15803d;
+        --accent: #f59e0b;
+        --text: #1f2937;
+      }
+
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 1rem;
+        box-sizing: border-box;
+      }
+
+      .game-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 2rem;
+        max-width: 500px;
+        width: 100%;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        text-align: center;
+      }
+
+      h1 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.6rem;
+        color: var(--primary);
+      }
+
+      .level-indicator {
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin-bottom: 1.5rem;
+      }
+
+      /* 目标汉字展示区 */
+      .target-box {
+        background: #ecfdf5;
+        border: 2px dashed var(--primary);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .target-pinyin {
+        font-size: 1.2rem;
+        color: var(--primary);
+        font-weight: bold;
+      }
+
+      .target-meaning {
+        font-size: 1rem;
+        color: #4b5563;
+        margin-top: 0.2rem;
+      }
+
+      .assembly-area {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin: 1.5rem 0;
+        min-height: 70px;
+      }
+
+      .slot {
+        width: 65px;
+        height: 65px;
+        border: 2px dashed #cbd5e1;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: bold;
+        background: #f8fafc;
+        transition: all 0.2s;
+      }
+
+      .slot.filled {
+        border-style: solid;
+        border-color: var(--primary);
+        background: #ffffff;
+      }
+
+      /* 可选卡片区 */
+      .options-title {
+        font-size: 0.85rem;
+        color: #9ca3af;
+        margin-bottom: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .cards-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .tile {
+        width: 60px;
+        height: 60px;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        font-weight: bold;
+        cursor: pointer;
+        user-select: none;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        transition: transform 0.1s, border-color 0.2s, box-shadow 0.2s;
+      }
+
+      .tile:hover {
+        transform: translateY(-2px);
+        border-color: var(--primary);
+        box-shadow: 0 6px 12px -2px rgba(22, 163, 74, 0.15);
+      }
+
+      .tile:active {
+        transform: translateY(0);
+      }
+
+      .tile.selected {
+        opacity: 0.3;
+        pointer-events: none;
+      }
+
+      /* 按钮与提示 */
+      .action-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.8rem;
+        font-size: 1rem;
+        font-weight: bold;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .action-btn:hover {
+        background: var(--primary-hover);
+      }
+
+      .feedback {
+        height: 24px;
+        margin-top: 1rem;
+        font-weight: bold;
+        font-size: 1rem;
+      }
+
+      .feedback.success { color: var(--primary); }
+      .feedback.error { color: #ef4444; }
+
+      /* 成功结果弹窗 */
+      .result-modal {
+        display: none;
+        margin-top: 1rem;
+        padding: 1rem;
+        background: #f0fdf4;
+        border-radius: 8px;
+        border: 1px solid #bbf7d0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="game-card">
+      <h1>🧩 汉字拼拼乐</h1>
+      <div class="level-indicator" id="levelIndicator">第 1 / 5 关</div>
+
+      <!-- 目标提示区 -->
+      <div class="target-box">
+        <div class="target-pinyin" id="targetPinyin">mā</div>
+        <div class="target-meaning" id="targetMeaning">Mother / Mom</div>
+      </div>
+
+      <!-- 拼接插槽区 -->
+      <div class="assembly-area">
+        <div class="slot" id="slot1">?</div>
+        <div class="slot" id="slot2">?</div>
+      </div>
+
+      <div class="options-title">点击卡片进行组合：</div>
+
+      <!-- 待选卡片区 -->
+      <div class="cards-container" id="cardsContainer"></div>
+
+      <div class="feedback" id="feedback"></div>
+
+      <button class="action-btn" id="nextBtn" style="display: none;">下一关 →</button>
+    </div>
+
+    <script is:inline>
+      // 1. 词库数据（针对初学者的基础字）
+      const wordBank = [
+        {
+          target: "妈",
+          pinyin: "mā",
+          meaning: "Mother / Mom",
+          parts: ["女", "马"],
+          distractors: ["氵", "木"]
+        },
+        {
+          target: "休",
+          pinyin: "xiū",
+          meaning: "To rest",
+          parts: ["亻", "木"],
+          distractors: ["日", "口"]
+        },
+        {
+          target: "明",
+          pinyin: "míng",
+          meaning: "Bright / Tomorrow",
+          parts: ["日", "月"],
+          distractors: ["女", "氵"]
+        },
+        {
+          target: "河",
+          pinyin: "hé",
+          meaning: "River",
+          parts: ["氵", "可"],
+          distractors: ["亻", "马"]
+        },
+        {
+          target: "林",
+          pinyin: "lín",
+          meaning: "Forest / Woods",
+          parts: ["木", "木"],
+          distractors: ["日", "可"]
+        }
+      ];
+
+      let currentLevel = 0;
+      let selectedParts = [];
+
+      const levelIndicator = document.getElementById("levelIndicator");
+      const targetPinyin = document.getElementById("targetPinyin");
+      const targetMeaning = document.getElementById("targetMeaning");
+      const slot1 = document.getElementById("slot1");
+      const slot2 = document.getElementById("slot2");
+      const cardsContainer = document.getElementById("cardsContainer");
+      const feedback = document.getElementById("feedback");
+      const nextBtn = document.getElementById("nextBtn");
+
+      // 初始化当前关卡
+      function loadLevel(index) {
+        if (index >= wordBank.length) {
+          showFinalScreen();
+          return;
+        }
+
+        const data = wordBank[index];
+        selectedParts = [];
+        feedback.textContent = "";
+        feedback.className = "feedback";
+        nextBtn.style.display = "none";
+
+        levelIndicator.textContent = `第 ${index + 1} / ${wordBank.length} 关`;
+        targetPinyin.textContent = data.pinyin;
+        targetMeaning.textContent = data.meaning;
+
+        // 清空插槽
+        slot1.textContent = "?";
+        slot1.classList.remove("filled");
+        slot2.textContent = "?";
+        slot2.classList.remove("filled");
+
+        // 混合正确部件与干扰部件，并打乱顺序
+        const allCards = [...data.parts, ...data.distractors];
+        shuffleArray(allCards);
+
+        // 渲染选项卡片
+        cardsContainer.innerHTML = "";
+        allCards.forEach((part, i) => {
+          const tile = document.createElement("div");
+          tile.className = "tile";
+          tile.textContent = part;
+          tile.onclick = () => handleCardClick(part, tile);
+          cardsContainer.appendChild(tile);
+        });
+      }
+
+      // 点击卡片逻辑
+      function handleCardClick(part, element) {
+        if (selectedParts.length >= 2) return;
+
+        selectedParts.push(part);
+        element.classList.add("selected");
+
+        if (selectedParts.length === 1) {
+          slot1.textContent = part;
+          slot1.classList.add("filled");
+        } else if (selectedParts.length === 2) {
+          slot2.textContent = part;
+          slot2.classList.add("filled");
+          checkAnswer();
+        }
+      }
+
+      // 检查拼字结果
+      function checkAnswer() {
+        const currentData = wordBank[currentLevel];
+        const playerCombine = selectedParts.join("");
+        const correctCombine = currentData.parts.join("");
+
+        if (playerCombine === correctCombine) {
+          feedback.textContent = `🎉 太棒了！ ${currentData.parts[0]} + ${currentData.parts[1]} = ${currentData.target}`;
+          feedback.className = "feedback success";
+          nextBtn.style.display = "inline-block";
+        } else {
+          feedback.textContent = "❌ 拼错了哦，再试一次吧！";
+          feedback.className = "feedback error";
+          
+          // 1.2秒后重置插槽
+          setTimeout(() => {
+            selectedParts = [];
+            slot1.textContent = "?";
+            slot1.classList.remove("filled");
+            slot2.textContent = "?";
+            slot2.classList.remove("filled");
+            feedback.textContent = "";
+            document.querySelectorAll(".tile").forEach(t => t.classList.remove("selected"));
+          }, 1200);
+        }
+      }
+
+      // 洗牌函数
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+      }
+
+      // 通关画面
+      function showFinalScreen() {
+        document.querySelector(".game-card").innerHTML = `
+          <h1 style="font-size: 2rem;">🏆 恭喜通关！</h1>
+          <p style="color: #4b5563; margin: 1.5rem 0;">你已经掌握了今天所有的偏旁部首组合！</p>
+          <button class="action-btn" onclick="location.reload()">再玩一次</button>
+        `;
+      }
+
+      nextBtn.onclick = () => {
+        currentLevel++;
+        loadLevel(currentLevel);
+      };
+
+      // 启动游戏
+      loadLevel(currentLevel);
+    </script>
+  </body>
+</html>

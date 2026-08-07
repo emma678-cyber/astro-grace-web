@@ -1,0 +1,113 @@
+---
+import { beginnerTopics } from '../../../data/beginnerTopics.js';
+import { beginnerWorksheets } from '../../../data/beginnerWorksheets.js';
+import PasswordGate from '../../../components/PasswordGate.astro';
+
+// Astro 要求：动态路径页面必须提供 getStaticPaths，
+// 告诉它要为哪些 slug 生成静态页面 —— 这里直接用 beginnerTopics 里的 13 个 slug。
+export function getStaticPaths() {
+  return beginnerTopics.map((topic) => ({
+    params: { topic: topic.slug },
+    props: { topic },
+  }));
+}
+
+const { topic } = Astro.props;
+// 从总数据里筛出属于当前主题的资源
+const resources = beginnerWorksheets.filter((item) => item.topic === topic.slug);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{topic.title} · Beginner Chinese · Grace's Chinese Classroom</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sky-top: #bfe3f0; --sky-mid: #d9edd8; --sky-bottom: #f3f8e8;
+      --grass-dark: #5f9a52; --grass-mid: #82b968;
+      --cream: #fffcf3; --ink: #33402f; --ink-soft: #5c6b53;
+      --brown: #a6743f; --brown-dark: #8a5f30;
+      --card: #fffef9; --shadow: 0 12px 30px -12px rgba(60,80,40,0.25);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Inter', sans-serif; color: var(--ink); background: var(--cream); }
+    h1, h2 { font-family: 'Fraunces', serif; }
+    a { color: inherit; text-decoration: none; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 6vw; background: rgba(255,252,243,0.85);
+      backdrop-filter: blur(8px); border-bottom: 1px solid rgba(95,154,82,0.15);
+    }
+    .logo { font-family: 'Fraunces', serif; font-weight: 700; font-size: 20px; color: var(--brown-dark); }
+    .back-link { font-size: 14px; font-weight: 500; color: var(--ink-soft); }
+
+    .page-header {
+      padding: 140px 6vw 40px; text-align: center;
+      background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 55%, var(--sky-bottom) 100%);
+    }
+    .page-header h1 { font-size: clamp(26px,4vw,38px); margin: 0 0 8px; color: #3c4a30; }
+    .page-header p { color: var(--ink-soft); font-size: 14.5px; margin: 0; text-transform: uppercase; letter-spacing: .04em; }
+
+    .resource-wrap { padding: 50px 6vw 100px; max-width: 760px; margin: 0 auto; }
+    .resource-card {
+      background: var(--card); border-radius: 16px; padding: 20px 24px;
+      box-shadow: var(--shadow); border: 1px solid rgba(95,154,82,.12);
+      margin-bottom: 18px;
+    }
+    .resource-card h4 { margin: 0 0 6px; font-size: 16.5px; font-family: 'Fraunces', serif; color: #3c4a30; }
+    .resource-card p { margin: 0 0 14px; font-size: 13.8px; color: var(--ink-soft); line-height: 1.7; }
+    .download-link {
+      display: inline-block; background: var(--grass-dark); color: #fff;
+      padding: 9px 20px; border-radius: 999px; font-size: 13.5px; font-weight: 600;
+    }
+    .empty-state { text-align: center; color: var(--ink-soft); padding: 40px 0; font-size: 14.5px; }
+
+    footer { background: #3c4a30; color: #e7ecdf; padding: 40px 6vw 26px; text-align: center; font-size: 13.5px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">🌿 Grace's Chinese Classroom</a>
+  <a href="/beginner/worksheets" class="back-link">← 返回全部主题</a>
+</nav>
+
+<header class="page-header">
+  <h1>{topic.title}</h1>
+  <p>{topic.subtitle}</p>
+</header>
+
+<section class="resource-wrap">
+  {resources.length === 0 && (
+    <p class="empty-state">这个主题下还没有资源，稍后会陆续上传～</p>
+  )}
+
+  {resources.map((item) => (
+    <div class="resource-card">
+      <h4>{item.title}</h4>
+      {item.desc && <p>{item.desc}</p>}
+
+      {item.password ? (
+        <PasswordGate password={item.password}>
+          <a href={item.fileUrl} class="download-link">下载资料 →</a>
+        </PasswordGate>
+      ) : (
+        <a href={item.fileUrl} class="download-link">下载资料 →</a>
+      )}
+    </div>
+  ))}
+</section>
+
+<footer>
+  <p>© Grace's Chinese Classroom. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
